@@ -1,4 +1,3 @@
-import pprint
 import json
 from django.core.management.base import BaseCommand
 from blog.models import Video, Tag
