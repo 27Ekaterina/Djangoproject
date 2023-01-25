@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}
+Главная страница
+{% endblock %}
+
+{% block content%}
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <!-- Post preview-->
+            {% for item in video %}
+            <div class="post-preview">
+                    {% if item.image %}
+                    <img src="{{item.image.url}}" width="150">
+                    {% endif %}
+                    <a href="{% url 'blog:video_page' id=item.id %}">
+                    <h2 class="post-title">{{ item.title }}</h2>
+                    <h3 class="post-subtitle">{{ item.description }}</h3>
+                </a>
+                <p class="post-meta">
+                    Размещено на сайте
+                    <a href="#!">{{ item.create }}</a>
+
+                </p>
+            </div>
+            <!-- Divider-->
+            <hr class="my-4" />
+            {% endfor %}
+
+            <!-- Pager-->
+            <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+        </div>
+    </div>
+{% endblock %}

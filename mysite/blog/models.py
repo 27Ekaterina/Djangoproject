@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 
-
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -17,6 +16,7 @@ class Video(models.Model):
         validators=[FileExtensionValidator(allowed_extensions=['mp4'])]
     )
     tags = models.ManyToManyField(Tag)
+    image = models.ImageField(upload_to='poster/', null=True, blank=True)
 
     def __str__(self):
         return self.title
