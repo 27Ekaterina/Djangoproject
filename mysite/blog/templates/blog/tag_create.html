@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}
+Создание тега
+{% endblock %}
+
+{% block content%}
+<div class="row gx-4 gx-lg-5 justify-content-center">
+    <div class="col-md-10 col-lg-8 col-xl-7">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button class="btn btn-primary" id="submitButton" type="submit">Сохранить</button>
+        </form>
+    </div>
+</div>
+ {% endblock %}

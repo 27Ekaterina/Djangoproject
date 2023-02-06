@@ -1,18 +1,28 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 
+class TimeStamp(models.Model):
+    '''
+    Abstract - абстрактное наследование, для неё не создаются новые таблицы, данные хранятся в каждом наследнике
+    '''
+    create = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
 
-class Video(models.Model):
+class Video(TimeStamp):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    create = models.DateTimeField(auto_now_add=True)
     file = models.FileField(
-        upload_to='video/', null=True, blank=True, unique=True,
+        upload_to='video/', unique=True, blank=True, null=True,
         validators=[FileExtensionValidator(allowed_extensions=['mp4'])]
     )
     tags = models.ManyToManyField(Tag)
@@ -22,3 +32,10 @@ class Video(models.Model):
         return self.title
 
 
+# Классическое наследование - хранение в отдельной таблице (например name видео, name тега) со своими id
+#
+# class CoreObject(models.Model):
+#     name = models.CharField(max_length=32)
+#
+# class Car(CoreObject):
+#     text = models.TextField()

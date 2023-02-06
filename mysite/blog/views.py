@@ -1,68 +1,147 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.files.storage import FileSystemStorage
-from .models import Video
+from .models import Video, Tag
 from .forms import VideoForm
 from .management.commands.fill_db import Command
 from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+from django.views.generic.base import ContextMixin
 
 
-def main_view(request):
-    video = Video.objects.all()
-    return render(request, 'blog/index.html', context={'video': video})
-
-def video_page(request, id):
-    video_page = get_object_or_404(Video, id=id)
-    return render(request, 'blog/video_page.html', context={'video_page': video_page})
-
-def add_new_vido(request):
-    form1 = VideoForm
-    return render(request, 'blog/add.html', context={'form': form1})
-
-def result(request):
-    if request.method == 'POST':
-        # form = ReqForm(request.POST)
-        form = VideoForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect("/")
-        else:
-            form = VideoForm()
-            return render(request, 'blog/add.html', context={'form': form})
-            print("Не работает")
-    else:
-        form = VideoForm()
-        return render(request, 'blog/add.html', context={'form': form})
+class MainView(ListView):
+    model = Video
+    template_name = 'blog/index.html'
+    context_object_name = 'video'
 
 
+class VideoDetailView(DetailView):
+    model = Video
+    template_name = 'blog/video_page.html'
+    context_object_name = 'video'
+
+    def get(self, request, *args, **kwargs):
+        self.video_id = kwargs['pk']
+        return super().get(request, *args, **kwargs)
 
 
-
-        #     title = form.cleaned_data['title']
-        #     description = form.cleaned_data['description']
-        #     tag = form.cleaned_data['tag']
-        #
-        #     image_req = request.FILES["new_image"] if "new_image" in request.FILES else None
-        #     if image_req:
-        #         fs = FileSystemStorage('media/poster/')
-        #         filename = fs.save(image_req.name, image_req)
-        #         image = fs.url(filename)
-        #
-        #     file_req = request.FILES["new_file"] if "new_file" in request.FILES else None
-        #     if file_req:
-        #         fs1 = FileSystemStorage('media/video/')
-        #         filename1 = fs1.save(file_req.name, file_req)
-        #         file = fs1.url(filename1)
-        #
-        #     com = Command(file, title, description, tag, image)
-        #     com.handle()
-        #
-        #     return render(request, 'blog/video_page1.html', context={'title': title, 'description': description, 'image': image, 'file': file})
-        # else:
-        #     form1 = ReqForm
-        #     print("Не работает")
-        #     return render(request, 'blog/add.html', context={'form': form1})
-
-def contact(request):
-    return render(request, 'blog/contact.html')
+class AddCreateView(CreateView):
+    fields = '__all__'
+    model = Video
+    success_url = reverse_lazy('blog:index')
+    template_name = 'blog/add.html'
 
 
+class ContactTemplateView(TemplateView):
+    template_name = 'blog/contact.html'
+
+
+class NameContextMixin(ContextMixin):
+
+    def get_context_data(self, *args, **kwargs):
+        '''
+        отвечает за передачу параметров в контекст
+        :param args:
+        :param kwargs:
+        :return:
+        '''
+        context = super().get_context_data(*args, **kwargs)
+        context['name'] = 'Список тегов'
+        return context
+
+# список тегов
+
+class TagListView(ListView, NameContextMixin):
+    model = Tag
+    template_name = 'blog/tag_list.html'
+    context_object_name = 'tags'
+
+    def get_queryset(self):
+        """
+        Получение данных
+        :return:
+        """
+        return Tag.objects.all()
+
+# детальная информация
+class TagDetailView(DetailView):
+    model = Tag
+    template_name = 'blog/tag_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        """
+        метод обработки get запроса
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        self.tag_id = kwargs['pk']
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['name'] = 'Теги'
+        return context
+
+    def get_object(self, queryset=None):
+        """
+        получение этого объекта
+        :param queryset:
+        :return:
+        """
+        return get_object_or_404(Tag, pk=self.tag_id)
+
+#  создание тегов
+
+class TagCreateView(CreateView):
+    # form_class =
+    fields = '__all__'
+    model = Tag
+    success_url = reverse_lazy('blog:tag_list')
+    template_name = 'blog/tag_create.html'
+
+    # def form_valid(self, form):
+    #     """
+    #     срабатывает если форма валидна
+    #     :param form:
+    #     :return:
+    #     """
+    #     return super.form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Пришел пост запрос, можно из него получить данные
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        return super().post(request, *args, **kwargs)
+
+# обновление тега
+
+class TagUpdateView(UpdateView):
+    fields = "__all__"
+    model = Tag
+    success_url = reverse_lazy('blog:tag_list')
+    template_name = 'blog/tag_create.html'
+
+# удаление тега
+
+class TagDeleteView(DeleteView):
+    template_name = 'blog/tag_delete_confirm.html'
+    model = Tag
+    success_url = reverse_lazy('blog:tag_list')
+
+
+class VideoUpdateView(UpdateView):
+    fields = ['title', 'description', 'tags', 'image']
+    model = Video
+    success_url = reverse_lazy('blog:index')
+    template_name = 'blog/video_update.html'
+
+class VideoDeleteView(DeleteView):
+    template_name = 'blog/video_delete_confirm.html'
+    model = Video
+    success_url = reverse_lazy('blog:index')

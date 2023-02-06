@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+Изменение видео
+{% endblock %}
+
+{% block content %}
+    <h1>Edit video </h1>
+    <form action="" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </div>
+        <input type="submit" value="Update" />
+</form>
+{% endblock content %}

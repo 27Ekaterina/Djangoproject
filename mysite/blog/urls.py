@@ -7,11 +7,17 @@ from django.conf.urls.static import static
 app_name = 'blog'
 
 urlpatterns =[
-    path('', views.main_view, name='index'),
-    path('add/', views.add_new_vido, name='add'),
-    path('video_page/<int:id>/', views.video_page, name='video_page'),
-    path('contact/', views.contact, name='contact'),
-    path('result/', views.result, name='result')
+    path('', views.MainView.as_view(), name='index'),
+    path('add/', views.AddCreateView.as_view(), name='add'),
+    path('video_page/<int:pk>/', views.VideoDetailView.as_view(), name='video_page'),
+    path('contact/', views.ContactTemplateView.as_view(), name='contact'),
+    path('tag_list/', views.TagListView.as_view(), name='tag_list'),
+    path('tag_detail/<int:pk>/', views.TagDetailView.as_view(), name='tag_detail'),
+    path('tag_create/', views.TagCreateView.as_view(), name='tag_create'),
+    path('tag_update/<int:pk>/', views.TagUpdateView.as_view(), name='tag_update'),
+    path('tag_delete/<int:pk>/', views.TagDeleteView.as_view(), name='tag_delete'),
+    path('video_update/<int:pk>/', views.VideoUpdateView.as_view(), name='video_update'),
+    path('video_delete/<int:pk>/', views.VideoDeleteView.as_view(), name='video_delete'),
 ]
 
 

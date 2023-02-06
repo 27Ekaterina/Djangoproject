@@ -13,7 +13,7 @@
                     {% if item.image %}
                     <img src="{{item.image.url}}" width="150">
                     {% endif %}
-                    <a href="{% url 'blog:video_page' id=item.id %}">
+                    <a href="{% url 'blog:video_page' pk=item.pk %}">
                     <h2 class="post-title">{{ item.title }}</h2>
                     <h3 class="post-subtitle">{{ item.description }}</h3>
                 </a>
