@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from usersapp.models import BlogUser
 
 class TimeStamp(models.Model):
     '''
@@ -13,10 +14,14 @@ class TimeStamp(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50, unique=True, verbose_name='Name')
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "tag"
+        verbose_name_plural = 'tags'
 
 class Video(TimeStamp):
     title = models.CharField(max_length=100)
@@ -27,6 +32,7 @@ class Video(TimeStamp):
     )
     tags = models.ManyToManyField(Tag)
     image = models.ImageField(upload_to='poster/', null=True, blank=True)
+    user = models.ForeignKey(BlogUser, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title

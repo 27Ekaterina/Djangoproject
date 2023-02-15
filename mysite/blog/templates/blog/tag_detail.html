@@ -10,9 +10,10 @@
 
         <div class="col-md-10 col-lg-8 col-xl-7">
             {{object.name}}
+            {% if request.user.is_superuser%}
             <a href="{% url 'blog:tag_update' pk=object.pk %}"> /Изменить</a>
-
             <a href="{% url 'blog:tag_delete' pk=object.pk %}"> /Удалить</a>
+            {% endif %}
             </li>
         </div>
     </div>

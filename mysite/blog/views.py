@@ -1,9 +1,10 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, get_object_or_404
 from django.core.files.storage import FileSystemStorage
 from .models import Video, Tag
 from .forms import VideoForm
 from .management.commands.fill_db import Command
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.views.generic.base import ContextMixin
@@ -25,11 +26,36 @@ class VideoDetailView(DetailView):
         return super().get(request, *args, **kwargs)
 
 
-class AddCreateView(CreateView):
-    fields = '__all__'
+class AddCreateView(LoginRequiredMixin, CreateView):
     model = Video
+    form_class = VideoForm
     success_url = reverse_lazy('blog:index')
     template_name = 'blog/add.html'
+
+    # self.request.user - текущий пользователь
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class VideoUpdateView(UserPassesTestMixin, UpdateView):
+    fields = ['title', 'description', 'tags', 'image']
+    model = Video
+    success_url = reverse_lazy('blog:index')
+    template_name = 'blog/video_update.html'
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
+
+
+class VideoDeleteView(UserPassesTestMixin, DeleteView):
+    template_name = 'blog/video_delete_confirm.html'
+    model = Video
+    success_url = reverse_lazy('blog:index')
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
 
 
 class ContactTemplateView(TemplateView):
@@ -49,6 +75,7 @@ class NameContextMixin(ContextMixin):
         context['name'] = 'Список тегов'
         return context
 
+
 # список тегов
 
 class TagListView(ListView, NameContextMixin):
@@ -62,6 +89,7 @@ class TagListView(ListView, NameContextMixin):
         :return:
         """
         return Tag.objects.all()
+
 
 # детальная информация
 class TagDetailView(DetailView):
@@ -92,14 +120,17 @@ class TagDetailView(DetailView):
         """
         return get_object_or_404(Tag, pk=self.tag_id)
 
+
 #  создание тегов
 
-class TagCreateView(CreateView):
+class TagCreateView(LoginRequiredMixin, CreateView):
+    raise_exception = False
     # form_class =
     fields = '__all__'
     model = Tag
     success_url = reverse_lazy('blog:tag_list')
     template_name = 'blog/tag_create.html'
+
 
     # def form_valid(self, form):
     #     """
@@ -119,29 +150,24 @@ class TagCreateView(CreateView):
         """
         return super().post(request, *args, **kwargs)
 
+
 # обновление тега
 
-class TagUpdateView(UpdateView):
+class TagUpdateView(UserPassesTestMixin, UpdateView):
     fields = "__all__"
     model = Tag
     success_url = reverse_lazy('blog:tag_list')
     template_name = 'blog/tag_create.html'
 
+    def test_func(self):
+        return self.request.user.is_superuser
+
 # удаление тега
 
-class TagDeleteView(DeleteView):
+class TagDeleteView(UserPassesTestMixin, DeleteView):
     template_name = 'blog/tag_delete_confirm.html'
     model = Tag
     success_url = reverse_lazy('blog:tag_list')
 
-
-class VideoUpdateView(UpdateView):
-    fields = ['title', 'description', 'tags', 'image']
-    model = Video
-    success_url = reverse_lazy('blog:index')
-    template_name = 'blog/video_update.html'
-
-class VideoDeleteView(DeleteView):
-    template_name = 'blog/video_delete_confirm.html'
-    model = Video
-    success_url = reverse_lazy('blog:index')
+    def test_func(self):
+        return self.request.user.is_superuser

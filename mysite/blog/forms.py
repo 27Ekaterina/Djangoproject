@@ -21,4 +21,4 @@ class VideoForm(forms.ModelForm):
         model = Video
         # fields = '__all__'
         # fields = ['title', 'description', 'file', 'image']
-        exclude = ['tags']
+        exclude = ['tags', 'user']

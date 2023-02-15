@@ -13,14 +13,15 @@
                 <a href="{% url 'blog:tag_detail' pk=item.pk %}">
                     {{ item.name }}
                 </a>
-
+                {% if request.user.is_superuser%}
                 <a href="{% url 'blog:tag_update' pk=item.pk %}"> /Изменить</a>
-
                 <a href="{% url 'blog:tag_delete' pk=item.pk %}"> /Удалить</a>
+                {% endif %}
             </li>
         {% endfor %}
 
         <a href="{% url 'blog:tag_create' %}">Создать тег</a>
+
     </ul>
 
 {% endblock %}
