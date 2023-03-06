@@ -10,7 +10,7 @@
             <!-- Post preview-->
             {% for item in video %}
             <div class="post-preview">
-                    {% if item.image %}
+                    {% if item.has_image %}
                     <img src="{{item.image.url}}" width="150">
                     {% endif %}
                     <a href="{% url 'blog:video_page' pk=item.pk %}">

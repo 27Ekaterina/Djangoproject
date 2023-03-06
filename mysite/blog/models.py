@@ -37,6 +37,13 @@ class Video(TimeStamp):
     def __str__(self):
         return self.title
 
+    def has_image(self):
+        return bool(self.image)
+
+    def some_method(self):
+        return 'some method'
+
+
 
 # Классическое наследование - хранение в отдельной таблице (например name видео, name тега) со своими id
 #
