@@ -4,6 +4,7 @@ from django.urls import reverse
 from faker import Faker
 from usersapp.models import BlogUser
 from .models import Video
+from mixer.backend.django import mixer
 
 
 class ViewsTest(TestCase):
@@ -47,19 +48,14 @@ class ViewsTest(TestCase):
 class VideoDetailViewTestCase(TestCase):
 
     def setUp(self):
-        faker = Faker()
-        user = BlogUser.objects.create_user(username=faker.name(), email='testtest@test.ru', password='testclass')
-        self.video = Video.objects.create(title='testtitle_str', description=faker.name(), file='video/АВРОРА.mp4', user=user)
-        self.video2 = Video.objects.create(title='testtitle_str2', description=faker.name(), file='video/АВРОРА2.mp4',
-                                          user=user)
+        # faker = Faker()
+        # user = BlogUser.objects.create_user(username=faker.name(), email='testtest@test.ru', password='testclass')
+        # self.video = Video.objects.create(title='testtitle_str', description=faker.name(), file='video/АВРОРА.mp4', user=user)
+        # self.video2 = Video.objects.create(title='testtitle_str2', description=faker.name(), file='video/АВРОРА2.mp4',
+        #                                   user=user)
+        self.video = mixer.blend(Video, file='video/АВРОРА.mp4')
 
     def test_detail_video(self):
-        response = self.client.get('/video_page/2/')
+        response = self.client.get('/video_page/1/')
         self.assertEqual(response.status_code, 200)
-        #
-        # response = self.client.get(reverse('video_page/pk/', kwargs={'pk': self.video.id}))
-        # # self.assertEqual(response.status_code, 200)
-        # # # self.assertTemplateUsed(response,'articles/article_detail.html')
-        # # url = reverse('/video_page:pk/', kwargs={'pk': self.video.id})
-        # # response = self.client.get(url)
-        # self.assertEqual(response.status_code, 200)
+        

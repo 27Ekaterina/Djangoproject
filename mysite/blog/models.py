@@ -33,6 +33,7 @@ class Video(TimeStamp):
     tags = models.ManyToManyField(Tag)
     image = models.ImageField(upload_to='poster/', null=True, blank=True)
     user = models.ForeignKey(BlogUser, on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField(default=1)
 
     def __str__(self):
         return self.title
@@ -42,6 +43,11 @@ class Video(TimeStamp):
 
     def some_method(self):
         return 'some method'
+
+    def display_tags(self):
+        tags = self.tags.all()
+        result = '; '.join([item.name for item in tags])
+        return result
 
 
 
