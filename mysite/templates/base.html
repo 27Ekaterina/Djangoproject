@@ -1,4 +1,5 @@
 {% load static %}
+{% load str_extantions %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -55,6 +56,7 @@
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="site-heading">
                             <h1>ВИДЕОАРХИВ</h1>
+                            <h2>{{title|superoutput}}</h2>
                             <span class="subheading">Мир сквозь объектив камеры.
                                 <br> Ищите актуальное видео на нашем сайте.</span>
                         </div>
@@ -97,7 +99,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <div class="small text-center text-muted fst-italic">Copyright &copy; Видеоархив 2022</div>
+                        <div class="small text-center text-muted fst-italic">{{joke}}</div>
                     </div>
                 </div>
             </div>

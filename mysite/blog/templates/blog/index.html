@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block content%}
+    Количество видео на странице: {{video|length}}
+    <hr>
     <div class="row gx-4 gx-lg-5 justify-content-center">
         <div class="col-md-10 col-lg-8 col-xl-7">
             <!-- Post preview-->
@@ -15,20 +17,35 @@
                     {% endif %}
                     <a href="{% url 'blog:video_page' pk=item.pk %}">
                     <h2 class="post-title">{{ item.title }}</h2>
-                    <h3 class="post-subtitle">{{ item.description }}</h3>
+<!--                    <h3 class="post-subtitle">{{ item.description|safe }}</h3>-->
                 </a>
                 <p class="post-meta">
                     Размещено на сайте
                     <a href="#!">{{ item.create }}</a>
-
                 </p>
             </div>
             <!-- Divider-->
             <hr class="my-4" />
             {% endfor %}
 
-            <!-- Pager-->
-            <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; /first/ </a>
+                        <a href="?page={{ page_obj.previous_page_number }}"> /previous/ </a>
+                    {% endif %}
+
+                    <span class="current">
+                         /Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}/
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}"> /next/ </a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}"> /last/  &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
         </div>
     </div>
 {% endblock %}

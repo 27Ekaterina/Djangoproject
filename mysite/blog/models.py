@@ -11,10 +11,24 @@ class TimeStamp(models.Model):
     class Meta:
         abstract = True
 
+class ActiveManager(models.Manager):
+
+    def get_queryset(self):
+        all_objects = super().get_queryset()
+        return all_objects.filter(is_active=True)
+
+class IsActiveMixin(models.Model):
+    is_active = models.BooleanField(default=False)
+    objects = models.Manager()
+    active_objects = ActiveManager()
+
+    class Meta:
+        abstract = True
 
 
-class Tag(models.Model):
+class Tag(IsActiveMixin):
     name = models.CharField(max_length=50, unique=True, verbose_name='Name')
+
 
     def __str__(self):
         return self.name
@@ -23,7 +37,9 @@ class Tag(models.Model):
         verbose_name = "tag"
         verbose_name_plural = 'tags'
 
-class Video(TimeStamp):
+
+
+class Video(TimeStamp, IsActiveMixin):
     title = models.CharField(max_length=100)
     description = models.TextField()
     file = models.FileField(
@@ -32,8 +48,9 @@ class Video(TimeStamp):
     )
     tags = models.ManyToManyField(Tag)
     image = models.ImageField(upload_to='poster/', null=True, blank=True)
-    user = models.ForeignKey(BlogUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(BlogUser, on_delete=models.CASCADE, related_name='user_video')
     rating = models.PositiveSmallIntegerField(default=1)
+
 
     def __str__(self):
         return self.title

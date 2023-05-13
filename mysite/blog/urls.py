@@ -18,6 +18,8 @@ urlpatterns =[
     path('tag_delete/<int:pk>/', views.TagDeleteView.as_view(), name='tag_delete'),
     path('video_update/<int:pk>/', views.VideoUpdateView.as_view(), name='video_update'),
     path('video_delete/<int:pk>/', views.VideoDeleteView.as_view(), name='video_delete'),
+    path('user_page/<int:pk>/', views.UserDetailView.as_view(), name='user_page'),
+    path('video_user_create/<int:pk>/', views.VideoUserCreateView.as_view(), name='video_user_create'),
 ]
 
 
