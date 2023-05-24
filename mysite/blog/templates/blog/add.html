@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}
+Добавление видео
+{% endblock %}
+
+{% block content%}
+<div class="row gx-4 gx-lg-5 justify-content-center">
+    <div class="col-md-10 col-lg-8 col-xl-7">
+        <form action="{% url 'blog:add' %}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                {% csrf_token %}
+<!--            {{ form.as_p }}-->
+                {% for field in form %}
+                    <p>{{field.label_tag}}</p>
+                    <div class="form-control">
+                            <p>{{field}}</p>
+                    </div>
+                    {% for error in field.errors %}
+                        {{error}}
+                    {% endfor %}
+                 {% endfor %}
+
+            </div>
+            <button class="btn btn-primary" id="submitButton" type="submit">Send</button>
+        </form>
+    </div>
+</div>
+ {% endblock %}

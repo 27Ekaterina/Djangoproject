@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}
+Видео
+{% endblock %}
+
+{% block content%}
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        {{ video.get_all_tag }}
+        <hr>
+        {% with all_tags=video.get_all_tag %}
+            <hr>
+            {% for tags in all_tags %}
+                {{ tags }}//
+            {% endfor %}
+            <hr>
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <h1>{{video.title}}<h1>
+                    <h6>{{video.description|safe}}</h6>
+                <br>
+                <video width="320" height="240" controls>
+                <source src="{{video.file.url}}" type="video/mp4">
+                </video>
+                </div>
+                <hr>
+                {% for tags in all_tags %}
+                    {{ tags }}---
+                {% endfor %}
+        {% endwith %}
+            <hr>
+            {% if object.user == request.user %}
+                <a href="{% url 'blog:video_update' pk=object.pk %}"> Изменить/</a>
+                <a href="{% url 'blog:video_delete' pk=object.pk %}"> Удалить</a>
+            {% endif %}
+
+    </div>
+{% endblock %}
