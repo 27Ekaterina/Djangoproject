@@ -13,7 +13,7 @@
             <hr>
             {% endfor %}
 
-            <form method="post" action = "{% url 'blog:video_user_create' pk=object.pk %}">
+            <form method="post" action = "{% url 'blog:video_user_create' pk=object.pk %}>
                 {% csrf_token %}
                 {{form.as_p}}
                 <button type="submit">Сохранить</button>

@@ -18,6 +18,7 @@
                     <a href="{% url 'blog:video_page' pk=item.pk %}">
                     <h2 class="post-title">{{ item.title }}</h2>
 <!--                    <h3 class="post-subtitle">{{ item.description|safe }}</h3>-->
+                        <h3 class="post-subtitle">Автор: {{item.user}}</h3>
                 </a>
                 <p class="post-meta">
                     Размещено на сайте

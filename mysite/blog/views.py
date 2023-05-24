@@ -13,7 +13,7 @@ from django.views.generic.base import ContextMixin
 
 
 class MainView(ListView):
-    paginate_by = 2
+    paginate_by = 100
     model = Video
     template_name = 'blog/index.html'
     context_object_name = 'video'
@@ -35,7 +35,7 @@ class MainView(ListView):
         :return:
         """
         # return Video.objects.filter(is_active=True)
-        return Video.active_objects.all()
+        return Video.active_objects.select_related('user').all()
 
 
 class VideoDetailView(DetailView):
@@ -47,6 +47,9 @@ class VideoDetailView(DetailView):
         self.video_id = kwargs['pk']
         return super().get(request, *args, **kwargs)
 
+    def get_all_tag(self):
+        obj = self.get_object()
+        return obj.tags == self.request.tags
 
 class AddCreateView(LoginRequiredMixin, CreateView):
     model = Video

@@ -1,12 +1,13 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.utils.functional import cached_property
 from usersapp.models import BlogUser
 
 class TimeStamp(models.Model):
     '''
     Abstract - абстрактное наследование, для неё не создаются новые таблицы, данные хранятся в каждом наследнике
     '''
-    create = models.DateTimeField(auto_now_add=True)
+    create = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:
         abstract = True
@@ -65,6 +66,11 @@ class Video(TimeStamp, IsActiveMixin):
         tags = self.tags.all()
         result = '; '.join([item.name for item in tags])
         return result
+
+    # @cached_property
+    def get_all_tag(self):
+        tags = Tag.objects.all()
+        return tags
 
 
 

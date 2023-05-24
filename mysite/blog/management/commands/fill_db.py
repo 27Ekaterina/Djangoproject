@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-from blog.models import Video, Tag
 
 class Command(BaseCommand):
     def __init__(self, file, title, description, tag, image):
